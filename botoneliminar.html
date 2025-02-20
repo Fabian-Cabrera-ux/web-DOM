@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario y DOM</title>
+</head>
+<body>
+    <form id="myForm">
+        <label for="producto">Producto:</label>
+        <input type="text" id="producto" name="producto" required>
+        <br>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" required>
+        <br>
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" required>
+        <br>
+        
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h2>Datos del formulario:</h2>
+    <ul id="formData"></ul>
+
+    <h2>Total acumulado: <span id="totalAcumulado">0.00</span></h2>
+
+    <script>
+        let totalGeneral = 0; // Variable para almacenar el total acumulado
+
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el envío del formulario
+
+            // Obtiene los valores de los campos del formulario
+            const producto = document.getElementById('producto').value;
+            const cantidad = parseFloat(document.getElementById('cantidad').value);
+            const precio = parseFloat(document.getElementById('precio').value);
+
+            if (isNaN(cantidad) || isNaN(precio) || cantidad <= 0 || precio <= 0) {
+                alert("Por favor, ingrese valores válidos para cantidad y precio.");
+                return;
+            }
+
+            // Calcula el total del producto
+            const total = cantidad * precio;
+
+            // Acumula el total en el total general
+            totalGeneral += total;
+
+            // Crea el elemento de lista con botón eliminar
+            const li = document.createElement('li');
+            li.innerHTML = `Producto: ${producto}, Cantidad: ${cantidad}, Precio: ${precio.toFixed(2)}, Total: ${total.toFixed(2)} <button onclick="eliminarItem(this, ${total})">Eliminar</button>`;
+            
+            // Agrega el elemento a la lista
+            document.getElementById('formData').appendChild(li);
+
+            // Actualiza el total acumulado en la página
+            document.getElementById('totalAcumulado').textContent = totalGeneral.toFixed(2);
+
+            // Limpia los campos del formulario
+            document.getElementById('producto').value = '';
+            document.getElementById('cantidad').value = '';
+            document.getElementById('precio').value = '';
+        });
+
+        function eliminarItem(boton, total) {
+            let li = boton.parentElement;
+            li.remove();
+            totalGeneral -= total;
+            document.getElementById('totalAcumulado').textContent = totalGeneral.toFixed(2);
+        }
+    </script>
+</body>
+</html>
